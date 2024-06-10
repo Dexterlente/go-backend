@@ -5,6 +5,7 @@ import (
 	"go-backend/internal/handlers"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -15,6 +16,11 @@ func main() {
         log.Println("No .env file found")
     }
 
+	port := os.Getenv("PORT")
+    if port == "" {
+        port = "5050" 
+    }
+	
     // Initialize database
     database, err := db.New()
     if err != nil {
@@ -25,6 +31,6 @@ func main() {
     http.HandleFunc("/users", handlers.GetUsers(database))
     http.HandleFunc("/user", handlers.CreateUser(database))
 
-    log.Println("Server is running on port 5050")
-    log.Fatal(http.ListenAndServe(":5050", nil))
+	log.Printf("Server is running on port %s\n", port)
+    log.Fatal(http.ListenAndServe(":"+port, nil))
 }
