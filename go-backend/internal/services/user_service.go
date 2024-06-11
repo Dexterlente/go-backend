@@ -11,6 +11,6 @@ func GetUsers(db *sqlx.DB) ([]models.User, error) {
     return repositories.GetUsers(db)
 }
 
-func CreateUser(db *sqlx.DB, user *models.User) (int64, error) {
+func CreateUser(db *sqlx.DB, user *models.User) (int, error) {
     return repositories.CreateUser(db, user)
 }
