@@ -21,7 +21,6 @@ func main() {
         port = "5050" 
     }
 	
-    // Initialize database
     database, err := db.New()
     if err != nil {
         log.Fatal(err)
