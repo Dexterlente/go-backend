@@ -23,7 +23,7 @@ func runMigrations(db *sqlx.DB) error {
     log.Println("Migrations completed successfully!")
     return nil
 }
-
+// TODO
 // Migrate Users Table
 func migrateUsers(db *sqlx.DB) error {
     _, err := db.Exec(`
