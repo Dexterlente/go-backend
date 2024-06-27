@@ -23,13 +23,19 @@ func runMigrations(db *sqlx.DB) error {
     log.Println("Migrations completed successfully!")
     return nil
 }
-// TODO
+
 // Migrate Users Table
 func migrateUsers(db *sqlx.DB) error {
     _, err := db.Exec(`
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
-            name TEXT NOT NULL
+            first_name VARCHAR(100) NOT NULL,
+            last_name VARCHAR(100) NOT NULL,
+            email VARCHAR(100) NOT NULL UNIQUE,
+            username VARCHAR(100) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `)
     if err != nil {
@@ -38,19 +44,3 @@ func migrateUsers(db *sqlx.DB) error {
     log.Println("Users table created successfully!")
     return nil
 }
-
-// // Migrate Products Table (Example additional table)
-// func migrateProducts(db *sqlx.DB) error {
-//     _, err := db.Exec(`
-//         CREATE TABLE IF NOT EXISTS products (
-//             id SERIAL PRIMARY KEY,
-//             name TEXT NOT NULL,
-//             price NUMERIC NOT NULL
-//         )
-//     `)
-//     if err != nil {
-//         return fmt.Errorf("failed to create products table: %v", err)
-//     }
-//     log.Println("Products table created successfully!")
-//     return nil
-// }

@@ -4,6 +4,7 @@ import (
 	"go-backend/internal/models"
 
 	"github.com/jmoiron/sqlx"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUsers(db *sqlx.DB) ([]models.User, error) {
@@ -13,10 +14,16 @@ func GetUsers(db *sqlx.DB) ([]models.User, error) {
 }
 
 func CreateUser(db *sqlx.DB, user *models.User) (int, error) {
-	var id int
-	err := db.QueryRowx(`INSERT INTO users (name) VALUES ($1) RETURNING id`, user.Name).Scan(&id)
-	if err != nil {
-		return 0, err
-	}
-	return id, nil
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+    if err != nil {
+        return 0, err
+    }
+
+    var id int
+    err = db.QueryRowx(`INSERT INTO users (first_name, last_name, email, password, username) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        user.FirstName, user.LastName, user.Email, hashedPassword, user.UserName).Scan(&id)
+    if err != nil {
+        return 0, err
+    }
+    return id, nil
 }
