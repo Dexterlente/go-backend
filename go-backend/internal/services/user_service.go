@@ -14,3 +14,5 @@ func GetUsers(db *sqlx.DB) ([]models.User, error) {
 func CreateUser(db *sqlx.DB, user *models.User) (int, error) {
     return repositories.CreateUser(db, user)
 }
+
+// TODO PUT REQUEST
