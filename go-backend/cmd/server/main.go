@@ -29,6 +29,8 @@ func main() {
     // Set up routes
     http.HandleFunc("/users", handlers.GetUsers(database))
     http.HandleFunc("/user", handlers.CreateUser(database))
+    http.HandleFunc("/change-password", handlers.ChangePasswordHandlerFunc(database))
+    
 
 	log.Printf("Server is running on port %s\n", port)
     log.Fatal(http.ListenAndServe(":"+port, nil))

@@ -13,3 +13,9 @@ type User struct {
     CreatedAt time.Time `db:"created_at" json:"created_at"`
     UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
 }
+
+type ChangePasswordRequest struct {
+    UserID      int    `json:"user_id"`
+    OldPassword string `json:"old_password"`
+    NewPassword string `json:"new_password"`
+}

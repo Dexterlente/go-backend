@@ -15,4 +15,6 @@ func CreateUser(db *sqlx.DB, user *models.User) (int, error) {
     return repositories.CreateUser(db, user)
 }
 
-// TODO PUT REQUEST
+func ChangePassword(db *sqlx.DB, req *models.ChangePasswordRequest) error {
+    return repositories.ChangePassword(db, req)
+}

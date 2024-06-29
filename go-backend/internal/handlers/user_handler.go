@@ -1,12 +1,14 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"go-backend/internal/models"
 	"go-backend/internal/services"
 	"net/http"
 
 	"github.com/jmoiron/sqlx"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUsers(db *sqlx.DB) http.HandlerFunc {
@@ -35,5 +37,31 @@ func CreateUser(db *sqlx.DB) http.HandlerFunc {
         }
 
         JSONResponse(w, http.StatusCreated, map[string]interface{}{"id": id})
+    }
+}
+
+func ChangePasswordHandlerFunc(db *sqlx.DB) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        var req models.ChangePasswordRequest
+        if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+            http.Error(w, "Invalid request", http.StatusBadRequest)
+            return
+        }
+
+        err := services.ChangePassword(db, &req)
+        if err != nil {
+            switch err {
+            case sql.ErrNoRows:
+                http.Error(w, "User not found", http.StatusNotFound)
+            case bcrypt.ErrMismatchedHashAndPassword:
+                http.Error(w, "Old password is incorrect", http.StatusUnauthorized)
+            default:
+                http.Error(w, "Failed to change password", http.StatusInternalServerError)
+            }
+            return
+        }
+
+        w.WriteHeader(http.StatusOK)
+        json.NewEncoder(w).Encode(map[string]string{"message": "Password changed successfully"})
     }
 }

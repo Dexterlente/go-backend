@@ -1,7 +1,9 @@
 package repositories
 
 import (
+	"database/sql"
 	"go-backend/internal/models"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
@@ -27,4 +29,32 @@ func CreateUser(db *sqlx.DB, user *models.User) (int, error) {
         return 0, err
     }
     return id, nil
+}
+
+
+func ChangePassword(db *sqlx.DB, req *models.ChangePasswordRequest) error {
+    var user models.User
+    err := db.Get(&user, "SELECT id, password FROM users WHERE id=$1", req.UserID)
+    if err != nil {
+        if err == sql.ErrNoRows {
+            return sql.ErrNoRows
+        }
+        return err
+    }
+
+    if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
+        return bcrypt.ErrMismatchedHashAndPassword
+    }
+
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+    if err != nil {
+        return err
+    }
+
+    _, err = db.Exec("UPDATE users SET password=$1, updated_at=$2 WHERE id=$3", hashedPassword, time.Now(), req.UserID)
+    if err != nil {
+        return err
+    }
+
+    return nil
 }
