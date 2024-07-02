@@ -21,15 +21,12 @@ func main() {
         port = "5050" 
     }
 	
-    database, err := db.New()
+    db, err := db.New()
     if err != nil {
         log.Fatal(err)
     }
 
-    // Set up routes
-    http.HandleFunc("/users", handlers.GetUsers(database))
-    http.HandleFunc("/user", handlers.CreateUser(database))
-    http.HandleFunc("/change-password", handlers.ChangePasswordHandlerFunc(database))
+    handlers.RegisterRoutes(db)
     
 
 	log.Printf("Server is running on port %s\n", port)

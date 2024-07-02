@@ -11,6 +11,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+
+func RegisterRoutes(db *sqlx.DB) {
+
+    http.HandleFunc("/users", GetUsers(db))
+    http.HandleFunc("/user", CreateUser(db))
+    http.HandleFunc("/change-password", ChangePasswordHandlerFunc(db))
+}
+
+
+
 func GetUsers(db *sqlx.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         users, err := services.GetUsers(db)
