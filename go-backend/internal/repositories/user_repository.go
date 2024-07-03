@@ -24,15 +24,13 @@ func CreateUser(db *sqlx.DB, user *models.User) (int, error) {
 
     var id int
     err = db.QueryRowx(`INSERT INTO users (first_name, last_name, email, password, username) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-        user.FirstName, user.LastName, user.Email, hashedPassword, user.UserName).Scan(&id)
+        user.FirstName, user.LastName, user.Email, string(hashedPassword), user.UserName).Scan(&id)
 
     if err != nil {
         return 0, err
     }
     return id, nil
 }
-
-
 
 func ChangePassword(db *sqlx.DB, req *models.ChangePasswordRequest) error {
     var user models.User
@@ -45,7 +43,9 @@ func ChangePassword(db *sqlx.DB, req *models.ChangePasswordRequest) error {
         return err
     }
 
-    log.Printf("Fetched user: %+v", user)
+    log.Printf("Byte slice comparison mismatch:")
+    log.Printf("user.Password: %x", user.Password)
+    log.Printf("req.OldPassword: %x", []byte(req.OldPassword))
 
     if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
         log.Printf("Password mismatch error: %v", err)
