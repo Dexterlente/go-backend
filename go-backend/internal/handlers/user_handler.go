@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"go-backend/internal/models"
 	"go-backend/internal/services"
+	"log"
 	"net/http"
 
 	"github.com/jmoiron/sqlx"
@@ -57,6 +58,8 @@ func ChangePasswordHandlerFunc(db *sqlx.DB) http.HandlerFunc {
             http.Error(w, "Invalid request", http.StatusBadRequest)
             return
         }
+
+        log.Printf("ChangePasswordRequest: %+v", req)
 
         err := services.ChangePassword(db, &req)
         if err != nil {
