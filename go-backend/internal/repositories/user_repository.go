@@ -17,6 +17,7 @@ func GetUsers(db *sqlx.DB) ([]models.User, error) {
 }
 
 func CreateUser(db *sqlx.DB, user *models.User) (int, error) {
+
     hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
     if err != nil {
         return 0, err
