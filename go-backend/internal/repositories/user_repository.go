@@ -44,10 +44,6 @@ func ChangePassword(db *sqlx.DB, req *models.ChangePasswordRequest) error {
         return err
     }
 
-    log.Printf("Byte slice comparison mismatch:")
-    log.Printf("user.Password: %x", user.Password)
-    log.Printf("req.OldPassword: %x", []byte(req.OldPassword))
-
     if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
         log.Printf("Password mismatch error: %v", err)
         return bcrypt.ErrMismatchedHashAndPassword
