@@ -36,7 +36,7 @@ func CreateUser(db *sqlx.DB, user *models.User) (int, error) {
 func ChangePassword(db *sqlx.DB, req *models.ChangePasswordRequest) error {
     var user models.User
     err := db.Get(&user, "SELECT id, password FROM users WHERE id=$1", req.UserID)
-    if err != nil {
+    if err != nil { 
         log.Printf("Error fetching user: %v", err)
         if err == sql.ErrNoRows {
             return sql.ErrNoRows
@@ -64,3 +64,5 @@ func ChangePassword(db *sqlx.DB, req *models.ChangePasswordRequest) error {
     log.Println("Password updated successfully")
     return nil
 }
+
+// CHANGE EMAIL USER
