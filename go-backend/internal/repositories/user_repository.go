@@ -64,5 +64,3 @@ func ChangePassword(db *sqlx.DB, req *models.ChangePasswordRequest) error {
     log.Println("Password updated successfully")
     return nil
 }
-
-// CHANGE EMAIL USER
